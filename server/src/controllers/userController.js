@@ -58,6 +58,13 @@ export async function updateUser(req, res, next) {
     const doc = await User.findByIdAndUpdate(req.params.id, { $set: value }, { new: true, runValidators: true });
     if (!doc) return res.status(404).json({ message: 'User not found' });
     res.json({ user: publicUser(doc) });
+    const updatedBooking = await Booking.findByIdAndUpdate(
+      req.params.id,
+      { $set: value },
+      { new: true, runValidators: true }
+    ).populate('bookedBy');
+
+    res.json({ booking: updatedBooking });
   } catch (err) { next(err); }
 }
 
